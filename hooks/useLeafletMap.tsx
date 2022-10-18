@@ -1,10 +1,12 @@
 import dynamic from 'next/dynamic'
 import { useMemo } from 'react'
 
-export const useMap = () => useMemo(() => dynamic(
-  () => import('../components/map/Map'),
+const useLeafletMap = () => useMemo(() => dynamic(
+  () => import('components/map/LeafletMap'),
   {
     loading: () => <p>Loading map...</p>,
     ssr: false,
   },
 ), [])
+
+export default useLeafletMap

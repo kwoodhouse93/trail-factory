@@ -1,11 +1,14 @@
 import Head from 'next/head'
-import DirBrowser from '../components/dir/DirBrowser'
-import { useMap } from '../hooks/useMap'
+import { useState } from 'react'
 
-import styles from '../styles/Home.module.scss'
+import DirBrowser from 'components/dir/DirBrowser'
+import TrackViewer from 'components/trackViewer/TrackViewer'
+
+import styles from 'styles/pages/Home.module.scss'
 
 export default function Home() {
-  const Map = useMap()
+  const [selectedPath, setSelectedPath] = useState(undefined)
+
   return (
     <div>
       <Head>
@@ -22,11 +25,11 @@ export default function Home() {
 
       <div className={styles.wrapper}>
         <aside className={styles.sidebar}>
-          <DirBrowser />
+          <DirBrowser setFullPath={setSelectedPath} />
         </aside>
         <main className={styles.main}>
           <div className={styles.mapWrapper}>
-            <Map />
+            <TrackViewer path={selectedPath} />
           </div>
         </main>
       </div>

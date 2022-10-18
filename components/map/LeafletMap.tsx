@@ -4,11 +4,12 @@ import { useCallback, useRef } from 'react'
 import { MapContainer, Polyline, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 
-type MapProps = {
+type LeafletMapProps = {
   polyline?: string
+  arrayLine?: { lat: number, lon: number }[]
 }
 
-const Map = ({ polyline }: MapProps) => {
+const LeafletMap = ({ polyline, arrayLine }: LeafletMapProps) => {
   const mapRef = useRef<Map>(null)
 
   // Auto-set zoom based on polyline
@@ -18,19 +19,35 @@ const Map = ({ polyline }: MapProps) => {
     }
   }, [])
 
-  let polylineEl = null
+
   let center = [51.509865, -0.118092]
+
+  let polylineEl = null
   if (polyline !== undefined) {
     const points = gPolyline.decode(polyline)
-    const center = points.reduce((acc, p) => {
+    center = points.reduce((acc, p) => {
       acc[0] += p[0]
       acc[1] += p[1]
       return acc
     }, [0, 0])
     center[0] /= points.length
     center[1] /= points.length
-
     polylineEl = <Polyline ref={fitRef} positions={points} />
+  }
+
+  let arrayLineEl = null
+  if (arrayLine !== undefined) {
+    const points: [number, number][] = arrayLine.map(p => [p.lat, p.lon])
+    if (polylineEl === null) {
+      center = points.reduce((acc, p) => {
+        acc[0] += p[0]
+        acc[1] += p[1]
+        return acc
+      }, [0, 0])
+      center[0] /= points.length
+      center[1] /= points.length
+    }
+    arrayLineEl = <Polyline ref={fitRef} positions={points} />
   }
 
   return (
@@ -45,8 +62,9 @@ const Map = ({ polyline }: MapProps) => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {polylineEl}
+      {arrayLineEl}
     </MapContainer>
   )
 }
 
-export default Map
+export default LeafletMap

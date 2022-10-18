@@ -1,22 +1,30 @@
+import path from 'path'
 import { useEffect, useState } from 'react'
+
 import DirViewer from './DirViewer'
 import LoadDir from './LoadDir'
 
-const DirBrowser = () => {
+import styles from 'styles/components/dir/DirBrowser.module.scss'
+
+const DirBrowser = ({ setFullPath }) => {
   let defaultPath = '/'
   if (typeof window !== 'undefined') {
     defaultPath = localStorage.getItem('path') || '/'
   }
-  const [path, setPath] = useState(defaultPath)
+  const [filepath, setFilepath] = useState(defaultPath)
   const [dir, setDir] = useState(undefined)
+  const [selected, setSelected] = useState(undefined)
 
   useEffect(() => {
-    getDir(path, d => setDir(d))
+    getDir(filepath, d => setDir(d))
   }, [])
 
   return <div>
-    <LoadDir path={path} setPath={setPath} onLoad={() => getDir(path, d => setDir(d))} />
-    <DirViewer dir={dir} />
+    <LoadDir className={styles.loader} path={filepath} setPath={setFilepath} onLoad={() => getDir(filepath, d => setDir(d))} />
+    <DirViewer dir={dir} selected={selected} setSelected={s => {
+      setSelected(s)
+      setFullPath(path.join(filepath, s))
+    }} />
   </div>
 }
 
@@ -28,7 +36,7 @@ const getDir = async (path, cb) => {
     localStorage.setItem('path', path)
   }
 
-  fetch(`/api/files?path=${path}`)
+  fetch(`/api/dir?path=${path}`)
     .then(res => res.json())
     .then(data => {
       cb(data.dir)
