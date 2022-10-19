@@ -1,10 +1,10 @@
 import Head from 'next/head'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Header from 'components/Header'
 import DirBrowser from 'components/dir/DirBrowser'
-import TrackList from 'components/trackViewer/TrackList'
-import TrackViewer from 'components/trackViewer/TrackViewer'
+import TrackList from 'components/track/TrackList'
+import TrackViewer from 'components/track/TrackViewer'
 import useGPXFile from 'hooks/useGPXFile'
 import useHighlightTracks from 'hooks/useHighlightTracks'
 
@@ -20,12 +20,14 @@ export default function Home() {
 
   const { highlighted, highlightTrack, unhighlightTrack } = useHighlightTracks()
   const { selected, selectTrack, unselectTrack, initTracks } = useTrackSelection([])
+  const ts = useTrackSelection([])
+  const reversed = ts.selected, reverseTrack = ts.selectTrack, unreverseTrack = ts.unselectTrack
 
-  useEffect(() => {
-    if (Array.isArray(gpx?.data)) {
-      initTracks(gpx.data.map(t => t.indexInFile))
-    }
-  }, [gpx?.data])
+  // useEffect(() => {
+  //   if (Array.isArray(gpx?.data)) {
+  //     initTracks(gpx.data.map(t => t.indexInFile))
+  //   }
+  // }, [gpx?.data])
 
   return (
     <div>
@@ -49,14 +51,22 @@ export default function Home() {
                 selected={selected}
                 selectTrack={selectTrack}
                 unselectTrack={unselectTrack}
+                reversed={reversed}
+                reverseTrack={reverseTrack}
+                unreverseTrack={unreverseTrack}
               />
-              <PostgresExporter gpx={gpx} selected={selected} />
+              <PostgresExporter gpx={gpx} selected={selected} reversed={reversed} />
             </>
           }
         </aside>
         <main className={styles.main}>
           <div className={styles.mapWrapper}>
-            <TrackViewer gpx={gpx} highlighted={highlighted} selected={selected} />
+            <TrackViewer
+              gpx={gpx}
+              highlighted={highlighted}
+              selected={selected}
+              reversed={reversed}
+            />
           </div>
         </main>
       </div>

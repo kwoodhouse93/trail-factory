@@ -1,9 +1,9 @@
-import { flattenTracks } from 'lib/geo/gpx'
+import { flattenTracks, reverseTracks } from 'lib/geo/gpx'
 import { toWKT } from 'lib/geo/wkt'
 import { cn } from 'lib/styles'
 import styles from 'styles/components/export/PostgresExporter.module.scss'
 
-const PostgresExporter = ({ gpx, selected }) => {
+const PostgresExporter = ({ gpx, selected, reversed }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -14,7 +14,7 @@ const PostgresExporter = ({ gpx, selected }) => {
       name: event.target.name.value,
       description: event.target.description.value,
       overwrite: event.target.overwrite.checked,
-      track: buildTrack(gpx, selected),
+      track: buildTrack(gpx, selected, reversed),
     }
 
     const JSONdata = JSON.stringify(data)
@@ -83,10 +83,12 @@ const PostgresExporter = ({ gpx, selected }) => {
 
 export default PostgresExporter
 
-const buildTrack = (gpx, selected) => {
+const buildTrack = (gpx, selected, reversed) => {
   return toWKT(
     flattenTracks(
-      gpx.data.filter(t => selected.includes(t.indexInFile)
+      reverseTracks(
+        gpx.data.filter(t => selected.includes(t.indexInFile)),
+        reversed
       )
     )
   )

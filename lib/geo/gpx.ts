@@ -1,3 +1,4 @@
+import { Track } from 'lib/types/tracks'
 import * as xml2js from 'xml2js'
 
 export const parseGPX = (gpx) => {
@@ -23,6 +24,18 @@ export const parseGPX = (gpx) => {
     outputTrack = track
   })
   return outputTrack
+}
+
+export const reverseTracks = (tracks: Track[], reverse: number[]) => {
+  return tracks.map(t => {
+    if (reverse.includes(t.indexInFile)) {
+      return {
+        ...t,
+        points: t.points.reverse(),
+      }
+    }
+    return t
+  })
 }
 
 export const flattenTracks = (tracks) => {

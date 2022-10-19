@@ -1,16 +1,27 @@
-import { FeatureGroup as FeatureGroupType, Map } from 'leaflet'
+import L, { FeatureGroup as FeatureGroupType, Map } from 'leaflet'
 import { useCallback, useRef } from 'react'
-import { FeatureGroup, MapContainer, Pane, Polyline, Rectangle, TileLayer } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
+import { FeatureGroup, MapContainer, Marker, Pane, Polyline, TileLayer } from 'react-leaflet'
 import { getTrackColor, Track } from 'lib/types/tracks'
+import 'leaflet/dist/leaflet.css'
+
+import icon from 'leaflet/dist/images/marker-icon.png'
+import iconShadow from 'leaflet/dist/images/marker-shadow.png'
+let DefaultIcon = L.icon({
+  iconUrl: icon.src,
+  shadowUrl: iconShadow.src,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41]
+})
+L.Marker.prototype.options.icon = DefaultIcon
 
 export type LeafletMapProps = {
   tracks?: Track[]
   highlightedTracks?: number[]
   selectedTracks?: number[]
+  reversedTracks?: number[]
 }
 
-const LeafletMap = ({ tracks, highlightedTracks, selectedTracks }: LeafletMapProps) => {
+const LeafletMap = ({ tracks, highlightedTracks, selectedTracks, reversedTracks }: LeafletMapProps) => {
   const mapRef = useRef<Map>(null)
 
   // Auto-set zoom based on polyline
@@ -33,6 +44,7 @@ const LeafletMap = ({ tracks, highlightedTracks, selectedTracks }: LeafletMapPro
 
   const trackEls = []
   const highlightEls = []
+  const startMarkers = []
   if (tracks !== undefined) {
     tracks.map((t, i) => {
       const points: [number, number][] = t.points.map(p => [p.lat, p.lon])
@@ -41,6 +53,12 @@ const LeafletMap = ({ tracks, highlightedTracks, selectedTracks }: LeafletMapPro
       }
       if (highlightedTracks !== undefined && highlightedTracks.includes(t.indexInFile)) {
         highlightEls.push(<Polyline key={i} positions={points} color='white' weight={8} />)
+
+        let start = t.points[0]
+        if (reversedTracks !== undefined && reversedTracks.includes(t.indexInFile)) {
+          start = t.points[t.points.length - 1]
+        }
+        startMarkers.push(<Marker position={[start.lat, start.lon]} />)
       }
     })
   }
@@ -64,6 +82,7 @@ const LeafletMap = ({ tracks, highlightedTracks, selectedTracks }: LeafletMapPro
       {trackEls.length > 0 && <FeatureGroup ref={fitRef}>
         {trackEls}
       </FeatureGroup>}
+      {startMarkers}
     </MapContainer>
   )
 }

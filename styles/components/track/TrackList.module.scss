@@ -2,6 +2,14 @@
     padding: 0 var(--padding) calc(var(--padding) - 4px);
 }
 
+.headerRow {
+    display: flex;
+    & > svg {
+        font-size: 12px;
+        margin-right: var(--padding);
+    }
+}
+
 .list {
     padding-left: 0;
     list-style: none;

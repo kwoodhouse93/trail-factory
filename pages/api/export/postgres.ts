@@ -52,5 +52,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ error: '500 (Internal Server Error): ' + e.message })
     return
   }
-
 }
