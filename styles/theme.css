@@ -1,15 +1,25 @@
 :root {
-    --border-color: hsla(0, 0%, 100%, 100%);
+    --border-color: hsla(0, 0%, 80%, 100%);
+    --inverse-border-color: hsla(0, 0%, 20%, 100%);
     --highlight-color: hsla(0, 0%, 90%, 1);
+
+    --s6c1: rgb(228, 26, 28);
+    --s6c2: rgb(55, 126, 184);
+    --s6c3: rgb(77, 175, 74);
+    --s6c4: rgb(152, 78, 163);
+    --s6c5: rgb(255, 127, 0);
+    --s6c6: rgb(255, 255, 51);
 
     --padding: 8px;
 
     --border: 1px solid var(--border-color);
+    --inverse-border: 1px solid var(--inverse-border-color);
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
         --border-color: hsla(0, 0%, 20%, 100%);
+        --inverse-border-color: hsla(0, 0%, 80%, 100%);
         --highlight-color: hsla(0, 0%, 10%, 100%);
     }
 }

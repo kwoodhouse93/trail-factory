@@ -8,13 +8,17 @@ export const parseGPX = (gpx) => {
       return
     }
     var track = result.gpx.trk.map(t => {
-      return t.trkseg[0].trkpt.map(p => {
+      const points = t.trkseg[0].trkpt.map(p => {
         return {
           lat: parseFloat(p.$.lat),
           lon: parseFloat(p.$.lon)
         }
       })
-    }).flat()
+      return {
+        name: t.name[0],
+        points: points,
+      }
+    })
     outputTrack = track
   })
   return outputTrack

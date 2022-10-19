@@ -1,53 +1,46 @@
-import * as gPolyline from 'google-polyline'
-import { Map, Polyline as PolylineType } from 'leaflet'
+import { FeatureGroup as FeatureGroupType, Map } from 'leaflet'
 import { useCallback, useRef } from 'react'
-import { MapContainer, Polyline, TileLayer } from 'react-leaflet'
+import { FeatureGroup, MapContainer, Pane, Polyline, Rectangle, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
+import { getTrackColor, Track } from 'lib/types/tracks'
 
-type LeafletMapProps = {
-  polyline?: string
-  arrayLine?: { lat: number, lon: number }[]
+export type LeafletMapProps = {
+  tracks?: Track[]
+  highlightedTracks?: string[]
 }
 
-const LeafletMap = ({ polyline, arrayLine }: LeafletMapProps) => {
+const LeafletMap = ({ tracks, highlightedTracks }: LeafletMapProps) => {
   const mapRef = useRef<Map>(null)
 
   // Auto-set zoom based on polyline
-  const fitRef = useCallback((polyline: PolylineType) => {
-    if (polyline !== undefined && polyline !== null && mapRef.current !== null) {
-      mapRef.current.fitBounds(polyline.getBounds())
+  const fitRef = useCallback((toFit: FeatureGroupType) => {
+    if (toFit !== undefined && toFit !== null && mapRef.current !== null) {
+      const bounds = toFit.getBounds()
+      if (bounds.isValid()) {
+        mapRef.current.fitBounds(bounds)
+      } else {
+        // Not sure why we seem to need this, there's probably a better way
+        setTimeout(() => {
+          mapRef.current.fitBounds(toFit.getBounds())
+        }, 100)
+      }
     }
   }, [])
 
 
-  let center = [51.509865, -0.118092]
+  let center: [number, number] = [51.509865, -0.118092]
 
-  let polylineEl = null
-  if (polyline !== undefined) {
-    const points = gPolyline.decode(polyline)
-    center = points.reduce((acc, p) => {
-      acc[0] += p[0]
-      acc[1] += p[1]
-      return acc
-    }, [0, 0])
-    center[0] /= points.length
-    center[1] /= points.length
-    polylineEl = <Polyline ref={fitRef} positions={points} />
-  }
+  const trackEls = []
+  const highlightEls = []
+  if (tracks !== undefined) {
+    tracks.map((t, i) => {
+      const points: [number, number][] = t.points.map(p => [p.lat, p.lon])
+      trackEls.push(<Polyline key={i} positions={points} color={getTrackColor(i)} />)
 
-  let arrayLineEl = null
-  if (arrayLine !== undefined) {
-    const points: [number, number][] = arrayLine.map(p => [p.lat, p.lon])
-    if (polylineEl === null) {
-      center = points.reduce((acc, p) => {
-        acc[0] += p[0]
-        acc[1] += p[1]
-        return acc
-      }, [0, 0])
-      center[0] /= points.length
-      center[1] /= points.length
-    }
-    arrayLineEl = <Polyline ref={fitRef} positions={points} />
+      if (highlightedTracks !== undefined && highlightedTracks.includes(t.name)) {
+        highlightEls.push(<Polyline key={i} positions={points} color='white' weight={8} />)
+      }
+    })
   }
 
   return (
@@ -61,8 +54,14 @@ const LeafletMap = ({ polyline, arrayLine }: LeafletMapProps) => {
         // attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {polylineEl}
-      {arrayLineEl}
+      <Pane name='highlightPane' className='leaflet-overlay-pane' style={{ zIndex: 300 }}>
+        {highlightEls.length > 0 && <FeatureGroup>
+          {highlightEls}
+        </FeatureGroup>}
+      </Pane>
+      {trackEls.length > 0 && <FeatureGroup ref={fitRef}>
+        {trackEls}
+      </FeatureGroup>}
     </MapContainer>
   )
 }
