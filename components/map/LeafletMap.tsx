@@ -6,10 +6,11 @@ import { getTrackColor, Track } from 'lib/types/tracks'
 
 export type LeafletMapProps = {
   tracks?: Track[]
-  highlightedTracks?: string[]
+  highlightedTracks?: number[]
+  selectedTracks?: number[]
 }
 
-const LeafletMap = ({ tracks, highlightedTracks }: LeafletMapProps) => {
+const LeafletMap = ({ tracks, highlightedTracks, selectedTracks }: LeafletMapProps) => {
   const mapRef = useRef<Map>(null)
 
   // Auto-set zoom based on polyline
@@ -35,9 +36,10 @@ const LeafletMap = ({ tracks, highlightedTracks }: LeafletMapProps) => {
   if (tracks !== undefined) {
     tracks.map((t, i) => {
       const points: [number, number][] = t.points.map(p => [p.lat, p.lon])
-      trackEls.push(<Polyline key={i} positions={points} color={getTrackColor(i)} />)
-
-      if (highlightedTracks !== undefined && highlightedTracks.includes(t.name)) {
+      if (selectedTracks.includes(t.indexInFile) || highlightedTracks.includes(t.indexInFile)) {
+        trackEls.push(<Polyline key={i} positions={points} color={getTrackColor(i)} />)
+      }
+      if (highlightedTracks !== undefined && highlightedTracks.includes(t.indexInFile)) {
         highlightEls.push(<Polyline key={i} positions={points} color='white' weight={8} />)
       }
     })

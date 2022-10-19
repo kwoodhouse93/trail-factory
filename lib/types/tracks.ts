@@ -4,6 +4,7 @@ export type Point = {
 }
 
 export type Track = {
+  indexInFile: number
   name: string
   points: Point[]
 }

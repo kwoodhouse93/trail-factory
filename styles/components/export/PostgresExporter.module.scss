@@ -1,0 +1,36 @@
+.formRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: calc(var(--padding) / 2) 0;
+
+    & > label {
+        flex: 1 1 40%;
+    }
+
+    & > input {
+        flex: 1 1 60%;
+    }
+
+    & > button {
+        width: 100%;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.textarea {
+    width: 100%;
+    resize: vertical;
+}
+
+.checkboxRow {
+    flex-direction: row-reverse;
+    & > input {
+        flex: 0 0 auto;
+        margin-right: var(--padding);
+    }
+}

@@ -1,12 +1,8 @@
-import { useState } from 'react'
-
 import useLeafletMap from 'hooks/useLeafletMap'
-
-import TrackList from './TrackList'
 
 import styles from 'styles/components/trackViewer/TrackViewer.module.scss'
 
-const TrackViewer = ({ gpx, highlighted }) => {
+const TrackViewer = ({ gpx, highlighted, selected }) => {
   const LeafletMap = useLeafletMap()
 
   if (gpx === null) return <div>No file selected.</div>
@@ -17,7 +13,7 @@ const TrackViewer = ({ gpx, highlighted }) => {
     return <div>Loading track...</div>
   }
   return <div className={styles.wrapper}>
-    <LeafletMap tracks={gpx.data} highlightedTracks={highlighted} />
+    <LeafletMap tracks={gpx.data} highlightedTracks={highlighted} selectedTracks={selected} />
   </div>
 }
 

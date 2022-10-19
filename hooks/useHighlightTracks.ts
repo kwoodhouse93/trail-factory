@@ -1,18 +1,18 @@
 import { useState } from 'react'
 
-const highlightTrack = (name, setHighlightedTracks) => {
+const highlightTrack = (indexInFile, setHighlightedTracks) => {
   setHighlightedTracks(t => {
-    if (!t.includes(name)) {
-      return [...t, name]
+    if (!t.includes(indexInFile)) {
+      return [...t, indexInFile]
     }
     return t
   })
 }
 
-const unhighlightTrack = (name, setHighlightedTracks) => {
+const unhighlightTrack = (indexInFile, setHighlightedTracks) => {
   setHighlightedTracks(t => {
-    if (t.includes(name)) {
-      return t.filter(n => n !== name)
+    if (t.includes(indexInFile)) {
+      return t.filter(n => n !== indexInFile)
     }
     return t
   })
@@ -22,8 +22,8 @@ const useHighlightTracks = () => {
   const [highlightedTracks, setHighlightedTracks] = useState([])
   return {
     highlighted: highlightedTracks,
-    highlightTrack: (name) => highlightTrack(name, setHighlightedTracks),
-    unhighlightTrack: (name) => unhighlightTrack(name, setHighlightedTracks),
+    highlightTrack: (indexInFile) => highlightTrack(indexInFile, setHighlightedTracks),
+    unhighlightTrack: (indexInFile) => unhighlightTrack(indexInFile, setHighlightedTracks),
   }
 }
 
