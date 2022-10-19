@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import { useState } from 'react'
 
+import Header from 'components/Header'
 import DirBrowser from 'components/dir/DirBrowser'
 import TrackViewer from 'components/trackViewer/TrackViewer'
 
@@ -17,11 +18,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header>
-        <h1>
-          Trail Factory
-        </h1>
-      </header>
+      <Header />
 
       <div className={styles.wrapper}>
         <aside className={styles.sidebar}>

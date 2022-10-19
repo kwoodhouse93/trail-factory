@@ -6,6 +6,8 @@
 
 .sidebar {
   width: 400px;
+  padding: var(--padding);
+  border-right: 1px solid var(--border-color);
 }
 
 .main {
@@ -14,5 +16,6 @@
 }
 
 .mapWrapper {
+  padding: var(--padding);
   height: 100%;
 }
