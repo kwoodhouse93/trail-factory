@@ -3,8 +3,8 @@ import styles from 'styles/components/trackViewer/TrackList.module.scss'
 
 type TrackListProps = {
   tracks: Track[]
-  highlightTrack?: (string) => void
-  unhighlightTrack?: (string) => void
+  highlightTrack: (string) => void
+  unhighlightTrack: (string) => void
 }
 
 const TrackList = ({ tracks, highlightTrack, unhighlightTrack }: TrackListProps) => {
@@ -12,17 +12,11 @@ const TrackList = ({ tracks, highlightTrack, unhighlightTrack }: TrackListProps)
     <h2>Tracks</h2>
     <ul className={styles.list}>
       {tracks.map((t, i) => {
-        if (highlightTrack !== undefined && unhighlightTrack !== undefined) {
-          return <li key={i} onMouseOver={() => highlightTrack(t.name)} onMouseOut={() => unhighlightTrack(t.name)}>
-            <i className={styles.keyPip} style={{ backgroundColor: getTrackColor(i) }} />
-            {t.name}
-          </li>
-        } else {
-          return <li key={i} >
-            <i className={styles.keyPip} style={{ backgroundColor: getTrackColor(i) }} />
-            {t.name}
-          </li>
-        }
+        return <li className={styles.item} key={i} onMouseOver={() => highlightTrack(t.name)} onMouseOut={() => unhighlightTrack(t.name)}>
+          <input className={styles.checkbox} type="checkbox" />
+          <i className={styles.keyPip} style={{ backgroundColor: getTrackColor(i) }} />
+          {t.name}
+        </li>
       })}
     </ul>
   </div>

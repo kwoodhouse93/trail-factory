@@ -5,9 +5,25 @@
 }
 
 .sidebar {
-  width: 400px;
+  min-width: fit-content;
   padding: var(--padding);
   border-right: 1px solid var(--border-color);
+
+  display: flex;
+  flex-direction: column;
+
+  & > :first-child {
+    flex: 1 1 auto;
+  }
+
+  & > * {
+    flex: 0 0 auto;
+    border-bottom: var(--border);
+  }
+
+  & > :last-child {
+    border-bottom: none;
+  }
 }
 
 .main {

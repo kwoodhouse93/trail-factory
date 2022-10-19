@@ -20,6 +20,8 @@ const useGPXFile = (path) => {
       })
   }, [path])
 
+  if (path === undefined) return null
+
   return {
     data: gpx,
     error: error,
