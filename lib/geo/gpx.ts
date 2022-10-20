@@ -8,20 +8,42 @@ export const parseGPX = (gpx) => {
       console.error(err)
       return
     }
-    var track = result.gpx.trk.map((t, i) => {
-      const points = t.trkseg[0].trkpt.map(p => {
+
+    if (result.gpx.trk !== undefined) {
+      var track = result.gpx.trk.map((t, i) => {
+        const points = t.trkseg[0].trkpt.map(p => {
+          return {
+            lat: parseFloat(p.$.lat),
+            lon: parseFloat(p.$.lon)
+          }
+        })
         return {
-          lat: parseFloat(p.$.lat),
-          lon: parseFloat(p.$.lon)
+          name: t.name[0],
+          indexInFile: i,
+          points: points,
         }
       })
-      return {
-        name: t.name[0],
-        indexInFile: i,
-        points: points,
-      }
-    })
-    outputTrack = track
+      outputTrack = track
+      return
+    }
+
+    if (result.gpx.rte !== undefined) {
+      var route = result.gpx.rte.map((r, i) => {
+        const points = r.rtept.map(p => {
+          return {
+            lat: parseFloat(p.$.lat),
+            lon: parseFloat(p.$.lon)
+          }
+        })
+        return {
+          name: r.name[0],
+          indexInFile: i,
+          points: points,
+        }
+      })
+      outputTrack = route
+      return
+    }
   })
   return outputTrack
 }

@@ -5,7 +5,6 @@ const useGPXFile = (path) => {
   const [gpx, setGpx] = useState(undefined)
   const [error, setError] = useState(undefined)
 
-
   useEffect(() => {
     if (path === undefined) return
 
@@ -14,6 +13,7 @@ const useGPXFile = (path) => {
       .then(data => parseGPX(Buffer.from(data.file).toString('utf8')))
       .then(data => {
         setGpx(data)
+        setError(undefined)
       })
       .catch(err => {
         setError(err)

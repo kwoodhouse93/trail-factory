@@ -1,15 +1,50 @@
+import { cn } from 'lib/styles'
 import styles from 'styles/components/dir/DirViewer.module.scss'
+import Dir from './Dir'
 import File from './File'
+import path from 'path'
 
-const DirViewer = ({ dir, selected, setSelected }) => {
-  if (!dir) {
+type DirItem = {
+  name: string
+  type: 'file' | 'dir'
+}
+
+type Dir = {
+  path: string
+  items: DirItem[]
+}
+
+type DirViewerProps = {
+  dir?: Dir
+  selected: string
+  setSelected: React.Dispatch<any>
+}
+
+const DirViewer = ({ dir, selected, setSelected }: DirViewerProps) => {
+  if (dir === undefined || dir.items === undefined) {
     return <div></div>
   }
+  const filepath = dir.path
 
   return <div className={styles.wrapper}>
-    <h2>{dir.path}</h2>
+    <li className={cn(styles.title)}>{filepath}</li>
     <ul className={styles.fileList}>
-      {dir.map(f => <File key={f} name={f} selected={f === selected} onClick={() => setSelected(f)} className={styles.fileItem} />)}
+      {dir.items.map(f => {
+        if (f.type === 'dir') return <Dir
+          key={f.name}
+          filepath={path.join(filepath, f.name)}
+          name={f.name}
+          selected={selected}
+          setSelected={setSelected}
+        />
+        return <File
+          key={f.name}
+          name={f.name}
+          selected={path.join(filepath, f.name) === selected}
+          onClick={() => setSelected(path.join(filepath, f.name))}
+          className={styles.fileItem}
+        />
+      })}
     </ul>
   </div>
 }

@@ -1,8 +1,15 @@
 .fileList {
     padding: 0;
+    padding-left: var(--padding);
     list-style: none;
 }
 
 .fileItem {
+    padding: calc(var(--padding) / 2) var(--padding);
+}
+
+.title {
+    list-style: none;
+    font-weight: bold;
     padding: 4px 8px;
 }

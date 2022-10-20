@@ -20,19 +20,23 @@ const DirBrowser = ({ setFullPath }) => {
   }, [])
 
   return <div>
-    <LoadDir className={styles.loader} path={filepath} setPath={setFilepath} onLoad={() => getDir(filepath, d => setDir(d))} />
+    <LoadDir
+      className={styles.loader}
+      path={filepath}
+      setPath={setFilepath}
+      onLoad={() => getDir(filepath, d => setDir(d), true)}
+    />
     <DirViewer dir={dir} selected={selected} setSelected={s => {
       setSelected(s)
-      setFullPath(path.join(filepath, s))
+      setFullPath(s)
     }} />
   </div>
 }
 
 export default DirBrowser
 
-
-const getDir = async (path, cb) => {
-  if (typeof window !== 'undefined') {
+export const getDir = async (path, cb, store?) => {
+  if (typeof window !== 'undefined' && store === true) {
     localStorage.setItem('path', path)
   }
 

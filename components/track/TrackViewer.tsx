@@ -7,7 +7,14 @@ const TrackViewer = ({ gpx, highlighted, selected, reversed }) => {
 
   if (gpx === null) return <div>No file selected.</div>
   if (gpx.error) {
-    return <div>Error loading track</div>
+    return <div>
+      <p>
+        Error loading track:
+      </p>
+      <p>
+        {gpx.error.message}
+      </p>
+    </div>
   }
   if (gpx.data === undefined) {
     return <div>Loading track...</div>
