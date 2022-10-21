@@ -5,21 +5,22 @@ import Header from 'components/Header'
 import DirBrowser from 'components/dir/DirBrowser'
 import TrackList from 'components/track/TrackList'
 import TrackViewer from 'components/track/TrackViewer'
-import useGPXFile from 'hooks/useGPXFile'
+import useGPXFiles from 'hooks/useGPXFiles'
 import useHighlightTracks from 'hooks/useHighlightTracks'
 
 import styles from 'styles/pages/Home.module.scss'
 import useTrackSelection from 'hooks/useTrackSelection'
 import PostgresExporter from 'components/export/PostgresExporter'
+import { useEffect } from 'react'
 
 export default function Home() {
-  const [selectedPath, setSelectedPath] = useState(undefined)
+  const [selectedPaths, setSelectedPaths] = useState(undefined)
 
-  const gpx = useGPXFile(selectedPath)
+  const gpx = useGPXFiles(selectedPaths)
   const gpxValid = gpx !== null && gpx.data !== undefined && !gpx.error
 
   const { highlighted, highlightTrack, unhighlightTrack } = useHighlightTracks()
-  const { selected, selectTrack, unselectTrack, initTracks } = useTrackSelection([])
+  const { selected, selectTrack, unselectTrack } = useTrackSelection(Array.from(Array(gpx?.data?.length).keys()))
   const ts = useTrackSelection([])
   const reversed = ts.selected, reverseTrack = ts.selectTrack, unreverseTrack = ts.unselectTrack
 
@@ -41,11 +42,11 @@ export default function Home() {
 
       <div className={styles.wrapper}>
         <aside className={styles.sidebar}>
-          <DirBrowser setFullPath={setSelectedPath} />
+          <DirBrowser setFullPaths={setSelectedPaths} />
           {gpxValid &&
             <>
               <TrackList
-                tracks={gpx.data}
+                tracks={gpx.data.flat()}
                 highlightTrack={highlightTrack}
                 unhighlightTrack={unhighlightTrack}
                 selected={selected}

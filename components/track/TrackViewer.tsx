@@ -20,7 +20,7 @@ const TrackViewer = ({ gpx, highlighted, selected, reversed }) => {
     return <div>Loading track...</div>
   }
   return <div className={styles.wrapper}>
-    <LeafletMap tracks={gpx.data} highlightedTracks={highlighted} selectedTracks={selected} reversedTracks={reversed} />
+    <LeafletMap tracks={gpx.data.flat()} highlightedTracks={highlighted} selectedTracks={selected} reversedTracks={reversed} />
   </div>
 }
 

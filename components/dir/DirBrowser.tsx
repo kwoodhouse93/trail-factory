@@ -1,4 +1,3 @@
-import path from 'path'
 import { useEffect, useState } from 'react'
 
 import DirViewer from './DirViewer'
@@ -6,14 +5,14 @@ import LoadDir from './LoadDir'
 
 import styles from 'styles/components/dir/DirBrowser.module.scss'
 
-const DirBrowser = ({ setFullPath }) => {
+const DirBrowser = ({ setFullPaths }) => {
   let defaultPath = '/'
   if (typeof window !== 'undefined') {
     defaultPath = localStorage.getItem('path') || '/'
   }
   const [filepath, setFilepath] = useState(defaultPath)
   const [dir, setDir] = useState(undefined)
-  const [selected, setSelected] = useState(undefined)
+  const [selected, setSelected] = useState([])
 
   useEffect(() => {
     getDir(filepath, d => setDir(d))
@@ -26,9 +25,22 @@ const DirBrowser = ({ setFullPath }) => {
       setPath={setFilepath}
       onLoad={() => getDir(filepath, d => setDir(d), true)}
     />
-    <DirViewer dir={dir} selected={selected} setSelected={s => {
-      setSelected(s)
-      setFullPath(s)
+    <DirViewer dir={dir} selected={selected} setSelected={(filepath, append) => {
+      let fullPaths = []
+      if (!append) {
+        fullPaths = [filepath]
+        setSelected(fullPaths)
+      } else {
+        setSelected(s => {
+          if (s.includes(filepath)) {
+            fullPaths = s.filter(f => f !== filepath)
+          } else {
+            fullPaths = [...s, filepath]
+          }
+          return fullPaths
+        })
+      }
+      setFullPaths(fullPaths)
     }} />
   </div>
 }

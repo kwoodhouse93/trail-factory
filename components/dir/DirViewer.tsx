@@ -3,6 +3,7 @@ import styles from 'styles/components/dir/DirViewer.module.scss'
 import Dir from './Dir'
 import File from './File'
 import path from 'path'
+import React from 'react'
 
 type DirItem = {
   name: string
@@ -16,8 +17,8 @@ type Dir = {
 
 type DirViewerProps = {
   dir?: Dir
-  selected: string
-  setSelected: React.Dispatch<any>
+  selected: string[]
+  setSelected: (filepath: string, append?: boolean) => void
 }
 
 const DirViewer = ({ dir, selected, setSelected }: DirViewerProps) => {
@@ -40,8 +41,15 @@ const DirViewer = ({ dir, selected, setSelected }: DirViewerProps) => {
         return <File
           key={f.name}
           name={f.name}
-          selected={path.join(filepath, f.name) === selected}
-          onClick={() => setSelected(path.join(filepath, f.name))}
+          selected={selected.includes(path.join(filepath, f.name))}
+          onClick={(e: React.MouseEvent) => {
+            e.preventDefault()
+            let append = false
+            if (e.metaKey || e.ctrlKey) {
+              append = true
+            }
+            setSelected(path.join(filepath, f.name), append)
+          }}
           className={styles.fileItem}
         />
       })}
