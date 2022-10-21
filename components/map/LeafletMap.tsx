@@ -58,7 +58,7 @@ const LeafletMap = ({ tracks, highlightedTracks, selectedTracks, reversedTracks 
         if (reversedTracks !== undefined && reversedTracks.includes(t.id)) {
           start = t.points[t.points.length - 1]
         }
-        startMarkers.push(<Marker position={[start.lat, start.lon]} />)
+        startMarkers.push(<Marker key={i} position={[start.lat, start.lon]} />)
       }
     })
   }

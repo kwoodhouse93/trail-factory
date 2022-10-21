@@ -1,7 +1,7 @@
 import { parseGPX } from 'lib/geo/gpx'
 import { useEffect, useState } from 'react'
 
-const useGPXFiles = (paths, setNewTracks) => {
+const useGPXFiles = (paths, setNewTracks, setTrackIDs) => {
   const [gpxs, setGpxs] = useState(undefined)
   const [error, setError] = useState(undefined)
 
@@ -26,6 +26,7 @@ const useGPXFiles = (paths, setNewTracks) => {
         }
         setNewTracks(newTracks)
         setGpxs(data)
+        setTrackIDs(data.flat().map(t => t.id))
       })
   }, [paths])
 

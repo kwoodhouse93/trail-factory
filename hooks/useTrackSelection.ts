@@ -24,7 +24,7 @@ const useTrackSelection = (tracks) => {
     selected: selectedTracks,
     selectTrack: (id) => selectTrack(id, setSelectedTracks),
     unselectTrack: (id) => unselectTrack(id, setSelectedTracks),
-    setNewTracks: (trackIndexes) => setSelectedTracks(s => [...s, ...trackIndexes]),
+    setNewTrackIDs: (trackIndexes) => setSelectedTracks(s => [...s, ...trackIndexes]),
   }
 }
 

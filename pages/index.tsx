@@ -11,18 +11,19 @@ import useHighlightTracks from 'hooks/useHighlightTracks'
 import styles from 'styles/pages/Home.module.scss'
 import useTrackSelection from 'hooks/useTrackSelection'
 import PostgresExporter from 'components/export/PostgresExporter'
-import { useEffect } from 'react'
+import useTrackOrder from 'hooks/useTrackOrder'
 
 export default function Home() {
   const [selectedPaths, setSelectedPaths] = useState(undefined)
 
 
   const { highlighted, highlightTrack, unhighlightTrack } = useHighlightTracks()
-  const { selected, selectTrack, unselectTrack, setNewTracks } = useTrackSelection([])
+  const { selected, selectTrack, unselectTrack, setNewTrackIDs } = useTrackSelection([])
   const ts = useTrackSelection([])
   const reversed = ts.selected, reverseTrack = ts.selectTrack, unreverseTrack = ts.unselectTrack
+  const { trackOrder, moveTrackUp, moveTrackDown, setTrackOrderIDs } = useTrackOrder()
 
-  const gpx = useGPXFiles(selectedPaths, setNewTracks)
+  const gpx = useGPXFiles(selectedPaths, setNewTrackIDs, setTrackOrderIDs)
   const gpxValid = gpx !== null && gpx.data !== undefined && !gpx.error
 
   return (
@@ -50,8 +51,16 @@ export default function Home() {
                 reversed={reversed}
                 reverseTrack={reverseTrack}
                 unreverseTrack={unreverseTrack}
+                trackOrder={trackOrder}
+                moveTrackUp={moveTrackUp}
+                moveTrackDown={moveTrackDown}
               />
-              <PostgresExporter gpx={gpx} selected={selected} reversed={reversed} />
+              <PostgresExporter
+                gpx={gpx}
+                selected={selected}
+                reversed={reversed}
+                trackOrder={trackOrder}
+              />
             </>
           }
         </aside>

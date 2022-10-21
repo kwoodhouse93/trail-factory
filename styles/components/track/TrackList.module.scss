@@ -24,22 +24,28 @@
 
 .item {
     max-width: 400px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
 }
 .item:hover {
     background-color: var(--highlight-color);
 }
 
+.name {
+    flex: 1 1 auto;
+    white-space: nowrap;
+    overflow-x: auto;
+    // text-overflow: ellipsis;
+}
+
 .checkbox {
-    margin-right: 8px;
+    margin-right: var(--padding);
 }
 
 .keyPip {
     display: inline-block;
-    width: 12px;
     height: 12px;
-    margin-right: 8px;
+    width: calc(12px + var(--padding));
+    margin-right: var(--padding);
     border: var(--inverse-border);
 }

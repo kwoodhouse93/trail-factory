@@ -6,16 +6,18 @@ import Repeat from 'icons/repeat.svg'
 
 type TrackListProps = {
   tracks: Track[]
-  highlightTrack: (number) => void
-  unhighlightTrack: (number) => void
+  highlightTrack: (string) => void
+  unhighlightTrack: (string) => void
   selected: string[]
-  selectTrack: (number) => void
-  unselectTrack: (number) => void
+  selectTrack: (string) => void
+  unselectTrack: (string) => void
   reversed: string[]
-  reverseTrack: (number) => void
-  unreverseTrack: (number) => void
+  reverseTrack: (string) => void
+  unreverseTrack: (string) => void
+  trackOrder: string[]
+  moveTrackUp: (string) => void
+  moveTrackDown: (string) => void
 }
-
 
 const TrackList = ({
   tracks,
@@ -27,6 +29,9 @@ const TrackList = ({
   reversed,
   reverseTrack,
   unreverseTrack,
+  trackOrder,
+  moveTrackUp,
+  moveTrackDown,
 }: TrackListProps) => {
   const changeSelection = (e, t) => {
     if (e.target.checked) {
@@ -44,6 +49,10 @@ const TrackList = ({
     }
   }
 
+  if (tracks.length !== trackOrder.length) {
+    return null
+  }
+
   return <div className={styles.wrapper}>
     <h2>Tracks</h2>
     <div className={styles.headerRow}>
@@ -52,12 +61,15 @@ const TrackList = ({
     </div>
     <div className={styles.scrollArea}>
       <ul className={styles.list}>
-        {tracks.map((t, i) => {
+        {trackOrder.map((id, i) => {
+          const t = tracks.find(t => t.id === id)
           return <li className={styles.item} key={t.id} onMouseOver={() => highlightTrack(t.id)} onMouseOut={() => unhighlightTrack(t.id)}>
             <input className={styles.checkbox} type="checkbox" checked={selected.includes(t.id)} onChange={e => changeSelection(e, t)} />
             <input className={styles.checkbox} type="checkbox" checked={reversed.includes(t.id)} onChange={e => changeReversed(e, t)} />
             <i className={styles.keyPip} style={{ backgroundColor: getTrackColor(i) }} />
-            {t.name}
+            <span className={styles.name}>{t.name}</span>
+            <button className={styles.moveButton} onClick={() => moveTrackUp(t.id)}>▲</button>
+            <button className={styles.moveButton} onClick={() => moveTrackDown(t.id)}>▼</button>
           </li>
         })}
       </ul>
