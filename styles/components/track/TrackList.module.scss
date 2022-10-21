@@ -1,5 +1,12 @@
 .wrapper {
-    padding: 0 var(--padding) calc(var(--padding) - 4px);
+    padding-bottom: calc(var(--padding) - 4px);
+    max-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.scrollArea {
+    overflow-y: auto;
 }
 
 .headerRow {

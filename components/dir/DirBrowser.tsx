@@ -18,7 +18,7 @@ const DirBrowser = ({ setFullPaths }) => {
     getDir(filepath, d => setDir(d))
   }, [])
 
-  return <div>
+  return <div className={styles.wrapper}>
     <LoadDir
       className={styles.loader}
       path={filepath}

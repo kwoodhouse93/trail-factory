@@ -65,7 +65,7 @@ const PostgresExporter = ({ gpx, selected, reversed }) => {
           Description
         </label>
       </div>
-      <textarea id='description' name='description' rows={3} className={styles.textarea} />
+      <textarea id='description' name='description' rows={2} className={styles.textarea} />
       <div className={cn(styles.formRow, styles.checkboxRow)}>
         <label htmlFor='overwrite'>
           Overwrite existing

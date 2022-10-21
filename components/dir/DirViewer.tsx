@@ -28,7 +28,7 @@ const DirViewer = ({ dir, selected, setSelected }: DirViewerProps) => {
   const filepath = dir.path
 
   return <div className={styles.wrapper}>
-    <li className={cn(styles.title)}>{filepath}</li>
+    <li className={styles.title}>{filepath}</li>
     <ul className={styles.fileList}>
       {dir.items.map(f => {
         if (f.type === 'dir') return <Dir

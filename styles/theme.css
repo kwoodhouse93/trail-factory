@@ -10,7 +10,7 @@
     --s6c5: rgb(255, 127, 0);
     --s6c6: rgb(255, 255, 51);
 
-    --padding: 8px;
+    --padding: 4px;
 
     --border: 1px solid var(--border-color);
     --inverse-border: 1px solid var(--inverse-border-color);

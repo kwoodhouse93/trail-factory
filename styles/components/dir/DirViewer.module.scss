@@ -1,16 +1,26 @@
+.wrapper {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    // min-height: 0;
+    // max-height: inherit;
+    overflow-y: auto;
+}
+
 .fileList {
+    user-select: none;
     padding: 0;
-    padding-left: var(--padding);
+    padding-left: 24px;
     list-style: none;
 }
 
 .fileItem {
-    padding: calc(var(--padding) / 2) var(--padding);
+    padding: calc(var(--padding) / 2) 0;
 }
 
 .title {
     list-style: none;
     font-weight: bold;
-    padding: 4px 8px;
+    padding: 4px 0;
     cursor: pointer;
 }
