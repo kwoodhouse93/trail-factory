@@ -16,19 +16,14 @@ import { useEffect } from 'react'
 export default function Home() {
   const [selectedPaths, setSelectedPaths] = useState(undefined)
 
-  const gpx = useGPXFiles(selectedPaths)
-  const gpxValid = gpx !== null && gpx.data !== undefined && !gpx.error
 
   const { highlighted, highlightTrack, unhighlightTrack } = useHighlightTracks()
-  const { selected, selectTrack, unselectTrack } = useTrackSelection(Array.from(Array(gpx?.data?.length).keys()))
+  const { selected, selectTrack, unselectTrack, setNewTracks } = useTrackSelection([])
   const ts = useTrackSelection([])
   const reversed = ts.selected, reverseTrack = ts.selectTrack, unreverseTrack = ts.unselectTrack
 
-  // useEffect(() => {
-  //   if (Array.isArray(gpx?.data)) {
-  //     initTracks(gpx.data.map(t => t.id))
-  //   }
-  // }, [gpx?.data])
+  const gpx = useGPXFiles(selectedPaths, setNewTracks)
+  const gpxValid = gpx !== null && gpx.data !== undefined && !gpx.error
 
   return (
     <div>
