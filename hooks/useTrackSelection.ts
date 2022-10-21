@@ -1,18 +1,18 @@
 import { useState } from 'react'
 
-const selectTrack = (indexInFile, setSelectedTracks) => {
+const selectTrack = (id, setSelectedTracks) => {
   setSelectedTracks(t => {
-    if (!t.includes(indexInFile)) {
-      return [...t, indexInFile]
+    if (!t.includes(id)) {
+      return [...t, id]
     }
     return t
   })
 }
 
-const unselectTrack = (indexInFile, setSelectedTracks) => {
+const unselectTrack = (id, setSelectedTracks) => {
   setSelectedTracks(t => {
-    if (t.includes(indexInFile)) {
-      return t.filter(n => n !== indexInFile)
+    if (t.includes(id)) {
+      return t.filter(n => n !== id)
     }
     return t
   })
@@ -22,8 +22,8 @@ const useTrackSelection = (tracks) => {
   const [selectedTracks, setSelectedTracks] = useState(tracks || [])
   return {
     selected: selectedTracks,
-    selectTrack: (indexInFile) => selectTrack(indexInFile, setSelectedTracks),
-    unselectTrack: (indexInFile) => unselectTrack(indexInFile, setSelectedTracks),
+    selectTrack: (id) => selectTrack(id, setSelectedTracks),
+    unselectTrack: (id) => unselectTrack(id, setSelectedTracks),
     initTracks: (trackIndexes) => setSelectedTracks(trackIndexes),
   }
 }

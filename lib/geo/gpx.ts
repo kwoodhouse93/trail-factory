@@ -1,7 +1,7 @@
 import { Track } from 'lib/types/tracks'
 import * as xml2js from 'xml2js'
 
-export const parseGPX = (gpx) => {
+export const parseGPX = (filepath, gpx) => {
   var outputTrack = []
   xml2js.parseString(gpx, (err, result) => {
     if (err) {
@@ -19,7 +19,7 @@ export const parseGPX = (gpx) => {
         })
         return {
           name: t.name[0],
-          indexInFile: i,
+          id: filepath + i,
           points: points,
         }
       })
@@ -37,7 +37,7 @@ export const parseGPX = (gpx) => {
         })
         return {
           name: r.name[0],
-          indexInFile: i,
+          id: filepath + i,
           points: points,
         }
       })
@@ -48,9 +48,9 @@ export const parseGPX = (gpx) => {
   return outputTrack
 }
 
-export const reverseTracks = (tracks: Track[], reverse: number[]) => {
+export const reverseTracks = (tracks: Track[], reverse: string[]) => {
   return tracks.map(t => {
-    if (reverse.includes(t.indexInFile)) {
+    if (reverse.includes(t.id)) {
       return {
         ...t,
         points: t.points.reverse(),

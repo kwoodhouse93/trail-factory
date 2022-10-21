@@ -12,7 +12,7 @@ const useGPXFiles = (paths) => {
     paths.forEach(path => {
       fetch(`/api/file?path=${path}`)
         .then(res => res.json())
-        .then(data => parseGPX(Buffer.from(data.file).toString('utf8')))
+        .then(data => parseGPX(path, Buffer.from(data.file).toString('utf8')))
         .then(data => {
           setGpxs(g => [...g, data])
         })

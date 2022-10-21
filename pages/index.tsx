@@ -26,7 +26,7 @@ export default function Home() {
 
   // useEffect(() => {
   //   if (Array.isArray(gpx?.data)) {
-  //     initTracks(gpx.data.map(t => t.indexInFile))
+  //     initTracks(gpx.data.map(t => t.id))
   //   }
   // }, [gpx?.data])
 

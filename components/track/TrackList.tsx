@@ -8,10 +8,10 @@ type TrackListProps = {
   tracks: Track[]
   highlightTrack: (number) => void
   unhighlightTrack: (number) => void
-  selected: number[]
+  selected: string[]
   selectTrack: (number) => void
   unselectTrack: (number) => void
-  reversed: number[]
+  reversed: string[]
   reverseTrack: (number) => void
   unreverseTrack: (number) => void
 }
@@ -30,17 +30,17 @@ const TrackList = ({
 }: TrackListProps) => {
   const changeSelection = (e, t) => {
     if (e.target.checked) {
-      selectTrack(t.indexInFile)
+      selectTrack(t.id)
     } else {
-      unselectTrack(t.indexInFile)
+      unselectTrack(t.id)
     }
   }
 
   const changeReversed = (e, t) => {
     if (e.target.checked) {
-      reverseTrack(t.indexInFile)
+      reverseTrack(t.id)
     } else {
-      unreverseTrack(t.indexInFile)
+      unreverseTrack(t.id)
     }
   }
 
@@ -53,9 +53,9 @@ const TrackList = ({
     <div className={styles.scrollArea}>
       <ul className={styles.list}>
         {tracks.map((t, i) => {
-          return <li className={styles.item} key={i} onMouseOver={() => highlightTrack(t.indexInFile)} onMouseOut={() => unhighlightTrack(t.indexInFile)}>
-            <input className={styles.checkbox} type="checkbox" checked={selected.includes(t.indexInFile)} onChange={e => changeSelection(e, t)} />
-            <input className={styles.checkbox} type="checkbox" checked={reversed.includes(t.indexInFile)} onChange={e => changeReversed(e, t)} />
+          return <li className={styles.item} key={t.id} onMouseOver={() => highlightTrack(t.id)} onMouseOut={() => unhighlightTrack(t.id)}>
+            <input className={styles.checkbox} type="checkbox" checked={selected.includes(t.id)} onChange={e => changeSelection(e, t)} />
+            <input className={styles.checkbox} type="checkbox" checked={reversed.includes(t.id)} onChange={e => changeReversed(e, t)} />
             <i className={styles.keyPip} style={{ backgroundColor: getTrackColor(i) }} />
             {t.name}
           </li>

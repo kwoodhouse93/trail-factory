@@ -16,9 +16,9 @@ L.Marker.prototype.options.icon = DefaultIcon
 
 export type LeafletMapProps = {
   tracks?: Track[]
-  highlightedTracks?: number[]
-  selectedTracks?: number[]
-  reversedTracks?: number[]
+  highlightedTracks?: string[]
+  selectedTracks?: string[]
+  reversedTracks?: string[]
 }
 
 const LeafletMap = ({ tracks, highlightedTracks, selectedTracks, reversedTracks }: LeafletMapProps) => {
@@ -48,14 +48,14 @@ const LeafletMap = ({ tracks, highlightedTracks, selectedTracks, reversedTracks 
   if (tracks !== undefined) {
     tracks.map((t, i) => {
       const points: [number, number][] = t.points.map(p => [p.lat, p.lon])
-      if (selectedTracks.includes(t.indexInFile) || highlightedTracks.includes(t.indexInFile)) {
+      if (selectedTracks.includes(t.id) || highlightedTracks.includes(t.id)) {
         trackEls.push(<Polyline key={i} positions={points} color={getTrackColor(i)} />)
       }
-      if (highlightedTracks !== undefined && highlightedTracks.includes(t.indexInFile)) {
+      if (highlightedTracks !== undefined && highlightedTracks.includes(t.id)) {
         highlightEls.push(<Polyline key={i} positions={points} color='white' weight={8} />)
 
         let start = t.points[0]
-        if (reversedTracks !== undefined && reversedTracks.includes(t.indexInFile)) {
+        if (reversedTracks !== undefined && reversedTracks.includes(t.id)) {
           start = t.points[t.points.length - 1]
         }
         startMarkers.push(<Marker position={[start.lat, start.lon]} />)

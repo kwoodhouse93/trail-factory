@@ -87,7 +87,7 @@ const buildTrack = (gpx, selected, reversed) => {
   return toWKT(
     flattenTracks(
       reverseTracks(
-        gpx.data.filter(t => selected.includes(t.indexInFile)),
+        gpx.data.filter(t => selected.includes(t.id)),
         reversed
       )
     )
