@@ -10,15 +10,17 @@ const Dir = ({ filepath, name, selected, setSelected }) => {
   const [dir, setDir] = useState(undefined)
 
   useEffect(() => {
-    getDir(filepath, d => setDir(d))
-  }, [filepath, setDir])
+    if (open) {
+      getDir(filepath, d => setDir(d))
+    }
+  }, [open, filepath, setDir])
 
   return <div className={styles.wrapper}>
     <li
       className={cn(styles.title)}
       onClick={() => setOpen(o => !o)}
     >{name}</li>
-    {open === true &&
+    {open === true && Array.isArray(dir?.items) &&
       <ul className={styles.fileList}>
         {dir.items.map(f => {
           if (f.type === 'dir') {

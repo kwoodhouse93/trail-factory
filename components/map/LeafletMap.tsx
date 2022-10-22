@@ -3,9 +3,10 @@ import { useCallback, useRef } from 'react'
 import { FeatureGroup, MapContainer, Marker, Pane, Polyline, TileLayer } from 'react-leaflet'
 import { getTrackColor, Track } from 'lib/types/tracks'
 import 'leaflet/dist/leaflet.css'
-
+import styles from 'styles/components/map/LeafletMap.module.scss'
 import icon from 'leaflet/dist/images/marker-icon.png'
 import iconShadow from 'leaflet/dist/images/marker-shadow.png'
+
 let DefaultIcon = L.icon({
   iconUrl: icon.src,
   shadowUrl: iconShadow.src,
@@ -23,22 +24,29 @@ export type LeafletMapProps = {
 
 const LeafletMap = ({ tracks, highlightedTracks, selectedTracks, reversedTracks }: LeafletMapProps) => {
   const mapRef = useRef<Map>(null)
-
+  const fitRef = useRef<FeatureGroupType>(null)
   // Auto-set zoom based on polyline
-  const fitRef = useCallback((toFit: FeatureGroupType) => {
-    if (toFit !== undefined && toFit !== null && mapRef.current !== null) {
-      const bounds = toFit.getBounds()
+  // const fitRef = useCallback((toFit: FeatureGroupType) => {
+  //   if (toFit !== undefined && toFit !== null && mapRef.current !== null) {
+  //     const bounds = toFit.getBounds()
+  //     if (bounds.isValid()) {
+  //       mapRef.current.fitBounds(bounds)
+  //     } else {
+  //       // Not sure why we seem to need this, there's probably a better way
+  //       setTimeout(() => {
+  //         mapRef.current.fitBounds(toFit.getBounds())
+  //       }, 100)
+  //     }
+  //   }
+  // }, [])
+  const recenter = () => {
+    if (fitRef !== undefined && fitRef !== null && mapRef.current !== null) {
+      const bounds = fitRef.current.getBounds()
       if (bounds.isValid()) {
         mapRef.current.fitBounds(bounds)
-      } else {
-        // Not sure why we seem to need this, there's probably a better way
-        setTimeout(() => {
-          mapRef.current.fitBounds(toFit.getBounds())
-        }, 100)
       }
     }
-  }, [])
-
+  }
 
   let center: [number, number] = [51.509865, -0.118092]
 
@@ -48,7 +56,7 @@ const LeafletMap = ({ tracks, highlightedTracks, selectedTracks, reversedTracks 
   if (tracks !== undefined) {
     tracks.map((t, i) => {
       const points: [number, number][] = t.points.map(p => [p.lat, p.lon])
-      if (selectedTracks.includes(t.id) || highlightedTracks.includes(t.id)) {
+      if (selectedTracks.includes(t.id)) {
         trackEls.push(<Polyline key={i} positions={points} color={getTrackColor(i)} />)
       }
       if (highlightedTracks !== undefined && highlightedTracks.includes(t.id)) {
@@ -63,7 +71,10 @@ const LeafletMap = ({ tracks, highlightedTracks, selectedTracks, reversedTracks 
     })
   }
 
-  return (
+  return <>
+    <button className={styles.centerButton} onClick={() => recenter()}>
+      Center
+    </button>
     <MapContainer
       ref={mapRef}
       center={center}
@@ -84,7 +95,7 @@ const LeafletMap = ({ tracks, highlightedTracks, selectedTracks, reversedTracks 
       </FeatureGroup>}
       {startMarkers}
     </MapContainer>
-  )
+  </>
 }
 
 export default LeafletMap

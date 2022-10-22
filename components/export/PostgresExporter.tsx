@@ -1,7 +1,10 @@
 import { flattenTracks, reverseTracks } from 'lib/geo/gpx'
 import { toWKT } from 'lib/geo/wkt'
 import { cn } from 'lib/styles'
+import { useState } from 'react'
 import styles from 'styles/components/export/PostgresExporter.module.scss'
+import ExportImage from './ExportImage'
+
 
 type FormData = {
   connection: string
@@ -12,6 +15,8 @@ type FormData = {
 }
 
 const PostgresExporter = ({ gpx, selected, reversed, trackOrder }) => {
+  const [image, setImage] = useState<Blob | undefined>(undefined)
+
   let defaultFormData: FormData | undefined = undefined
   if (typeof window !== 'undefined') {
     const fd = localStorage.getItem('postgres-exporter-form-data')
@@ -23,6 +28,12 @@ const PostgresExporter = ({ gpx, selected, reversed, trackOrder }) => {
   const handleSubmit = async (event) => {
     event.preventDefault()
 
+    if (image === undefined) {
+      alert('Please generate a thumbnail before submitting')
+      return
+    }
+    const thumbnail = await blobToBase64(image)
+
     const data = {
       connection: event.target.connstr.value,
       id: event.target.id.value,
@@ -30,6 +41,7 @@ const PostgresExporter = ({ gpx, selected, reversed, trackOrder }) => {
       description: event.target.description.value,
       overwrite: event.target.overwrite.checked,
       track: buildTrack(gpx, selected, reversed, trackOrder),
+      thumbnail: thumbnail,
     }
 
     const JSONdata = JSON.stringify(data)
@@ -66,86 +78,107 @@ const PostgresExporter = ({ gpx, selected, reversed, trackOrder }) => {
 
   return <div className={styles.wrapper}>
     <h2>Export to Postgres</h2>
-    <form onSubmit={handleSubmit}>
-      <div className={styles.formRow}>
-        <label htmlFor='connstr'>
-          Connection string
-        </label>
-        <input
-          id='connstr'
-          name='connstr'
-          type='text'
-          placeholder='postgres://user:pass@host:port/database?opts'
-          required
-          defaultValue={defaultFormData?.connection}
+    <div className={styles.scrollArea}>
+      <form onSubmit={handleSubmit}>
+        <div className={styles.formRow}>
+          <label htmlFor='connstr'>
+            Connection string
+          </label>
+          <input
+            id='connstr'
+            name='connstr'
+            type='text'
+            placeholder='postgres://user:pass@host:port/database?opts'
+            required
+            defaultValue={defaultFormData?.connection}
+          />
+        </div>
+        <div className={styles.formRow}>
+          <label htmlFor='id'>
+            ID
+          </label>
+          <input
+            id='id'
+            name='id'
+            type='text'
+            required
+            defaultValue={defaultFormData?.id}
+          />
+        </div>
+        <div className={styles.formRow}>
+          <label htmlFor='name'>
+            Name
+          </label>
+          <input
+            id='name'
+            name='name'
+            type='text'
+            required
+            defaultValue={defaultFormData?.name}
+          />
+        </div>
+        <div className={styles.formRow}>
+          <label htmlFor='description'>
+            Description
+          </label>
+        </div>
+        <textarea
+          id='description'
+          name='description'
+          rows={2}
+          className={styles.textarea}
+          defaultValue={defaultFormData?.description}
         />
-      </div>
-      <div className={styles.formRow}>
-        <label htmlFor='id'>
-          ID
-        </label>
-        <input
-          id='id'
-          name='id'
-          type='text'
-          required
-          defaultValue={defaultFormData?.id}
-        />
-      </div>
-      <div className={styles.formRow}>
-        <label htmlFor='name'>
-          Name
-        </label>
-        <input
-          id='name'
-          name='name'
-          type='text'
-          required
-          defaultValue={defaultFormData?.name}
-        />
-      </div>
-      <div className={styles.formRow}>
-        <label htmlFor='description'>
-          Description
-        </label>
-      </div>
-      <textarea
-        id='description'
-        name='description'
-        rows={2}
-        className={styles.textarea}
-        defaultValue={defaultFormData?.description}
+        <div className={cn(styles.formRow, styles.checkboxRow)}>
+          <label htmlFor='overwrite'>
+            Overwrite existing
+          </label>
+          <input
+            id='overwrite'
+            name='overwrite'
+            type='checkbox'
+            defaultChecked={defaultFormData?.overwrite}
+          />
+        </div>
+        <div className={styles.formRow}>
+          <button type='submit'>
+            Insert
+          </button>
+        </div>
+      </form>
+      <ExportImage
+        gpx={gpx}
+        selected={selected}
+        reversed={reversed}
+        trackOrder={trackOrder}
+        image={image}
+        setImage={setImage}
       />
-      <div className={cn(styles.formRow, styles.checkboxRow)}>
-        <label htmlFor='overwrite'>
-          Overwrite existing
-        </label>
-        <input
-          id='overwrite'
-          name='overwrite'
-          type='checkbox'
-          defaultChecked={defaultFormData?.overwrite}
-        />
-      </div>
-      <div className={styles.formRow}>
-        <button type='submit'>
-          Insert
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
 }
 
 export default PostgresExporter
 
 const buildTrack = (gpx, selected, reversed, trackOrder) => {
+  const points = buildPoints(gpx, selected, reversed, trackOrder)
+  return toWKT(points)
+}
+
+export const buildPoints = (gpx, selected, reversed, trackOrder) => {
   const tracks = trackOrder.map(id => gpx.data.flat().find(t => t.id === id))
-  return toWKT(
-    flattenTracks(
-      reverseTracks(
-        tracks.filter(t => selected.includes(t.id)),
-        reversed
-      )
+  return flattenTracks(
+    reverseTracks(
+      tracks.filter(t => selected.includes(t.id)),
+      reversed
     )
   )
+}
+
+const blobToBase64: (Blob) => Promise<string> = (blob) => {
+  return new Promise((resolve, _) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result as string)
+    reader.readAsDataURL(blob)
+  })
 }

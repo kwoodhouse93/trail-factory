@@ -4,6 +4,14 @@ Load GPX files from the local file system. View, select, edit and combine the tr
 
 This is an internal tool to make it easier to add routes to Trail Tracker - see [kwoodhouse93/trail-progress](https://github.com/kwoodhouse93/trail-progress) for more on the project.
 
+## Running
+
+Simply `npm run dev` to run locally.
+
+You can try building with next too but there's not much point.
+
+For Mapbox image generation, `MAPBOX_ACCESS_TOKEN` must be in the environment.
+
 ## Files
 This project is intended to be run locally, for interacting with files on your local filesystem.
 
@@ -21,6 +29,7 @@ id text
 display_name text
 description text
 track geography
+thumbnail bytea
 ```
 
 > **Note**  
