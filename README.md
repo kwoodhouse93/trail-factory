@@ -4,7 +4,7 @@ Load GPX files from the local file system. View, select, edit and combine the tr
 
 This is an internal tool to make it easier to add routes to Trail Tracker - see [kwoodhouse93/trail-progress](https://github.com/kwoodhouse93/trail-progress) for more on the project.
 
-## Running
+## Running
 
 Simply `npm run dev` to run locally.
 
